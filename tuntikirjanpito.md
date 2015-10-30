@@ -1,4 +1,4 @@
-[*takaisin* Readme.md](/)
+[*takaisin* Readme.md](readme.md)
 
 # Tuntikirjanpito
 Päivä | Tuntimäärä | Mihin
