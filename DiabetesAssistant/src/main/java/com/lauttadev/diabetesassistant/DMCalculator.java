@@ -9,6 +9,11 @@ package com.lauttadev.diabetesassistant;
 import java.util.ArrayList;
 
 public class DMCalculator {
+    /**
+     * Checks the average bloodsugar
+     * @param bloodsugars
+     * @return 
+     */
     public float averageBloodsugar(ArrayList<Integer> bloodsugars){
         float average = 0f;
         

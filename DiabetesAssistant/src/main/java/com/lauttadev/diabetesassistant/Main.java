@@ -21,6 +21,8 @@ public class Main {
                 if(!login.loggedIn){
                     login.login(assistant.login());
                 }
+                System.out.println("");
+                System.out.println("Hei " + login.getUser());
                 
                 assistant.actions();
                 assistant.ask();
