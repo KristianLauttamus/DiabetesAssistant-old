@@ -115,6 +115,8 @@ public class Assistant {
                             System.out.println("Your latest Bloodsugar: ");
                             System.out.println(bloodSugars.get(bloodSugars.size()-1));
                             System.out.println("");
+                        } else {
+                            System.out.println("No BloodSugars in the records");
                         }
                     } catch (ParseException ex) {
                         Logger.getLogger(Assistant.class.getName()).log(Level.SEVERE, null, ex);

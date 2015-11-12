@@ -22,7 +22,7 @@ public class Main {
                     login.login(assistant.login());
                 }
                 System.out.println("");
-                System.out.println("Hei " + login.getUser());
+                System.out.println("Hey, " + login.getUser());
                 
                 assistant.actions();
                 assistant.ask();

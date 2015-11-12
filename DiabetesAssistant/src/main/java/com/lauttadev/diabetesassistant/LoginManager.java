@@ -14,8 +14,8 @@ public class LoginManager {
     
     public void login(User user){
         if(user != null){
-            user = user;
-            loggedIn = true;
+            this.user = user;
+            this.loggedIn = true;
         }
     }
     

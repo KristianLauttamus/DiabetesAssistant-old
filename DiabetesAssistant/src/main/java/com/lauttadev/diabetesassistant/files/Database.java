@@ -112,9 +112,9 @@ public class Database {
      * @return 
      */
     public ArrayList<BloodSugar> getBloodSugars(User user) throws ParseException {
-        JSONObject bloodSugarsJson = (JSONObject)new JSONParser().parse(prefs.get(BLOODSUGARS_KEY, "[]"));
+        JSONObject bloodSugarsJson = (JSONObject)new JSONParser().parse(prefs.get(BLOODSUGARS_KEY, "{}"));
         
-        // Check if user is found in the BloodSugars array
+        // Check if user is found in the BloodSugars Object
         if(bloodSugarsJson.containsKey(user.getId())){
             ArrayList<BloodSugar> bloodSugars = new ArrayList<BloodSugar>();
             JSONArray bloodSugarsTemp = (JSONArray)bloodSugarsJson.get(user.getId());
@@ -141,6 +141,8 @@ public class Database {
         BloodSugar bloodSugar = new BloodSugar(bs);
         
         bloodSugars.add(bloodSugar);
+        
+        this.saveBloodSugars(bloodSugars, user);
     }
     
     /**
@@ -149,7 +151,7 @@ public class Database {
      * @return 
      */
     public void saveBloodSugars(ArrayList<BloodSugar> bloodSugars, User user) throws ParseException {
-        JSONObject bloodSugarsJson = (JSONObject)new JSONParser().parse(prefs.get(BLOODSUGARS_KEY, "[]"));
+        JSONObject bloodSugarsJson = (JSONObject)new JSONParser().parse(prefs.get(BLOODSUGARS_KEY, "{}"));
         
         JSONArray bloodSugarsArray = new JSONArray();
         for(int i = 0; i < bloodSugars.size(); i++){
