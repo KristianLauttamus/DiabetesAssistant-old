@@ -9,6 +9,7 @@ package com.lauttadev.diabetesassistant.files;
 import com.lauttadev.diabetesassistant.models.BloodSugar;
 import com.lauttadev.diabetesassistant.models.User;
 import java.util.ArrayList;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,11 +18,18 @@ import org.json.simple.parser.ParseException;
 
 public class Database {
     // Retrieve the user preference node for the package com.mycompany
-    Preferences prefs = Preferences.userNodeForPackage(com.lauttadev.diabetesassistant.Main.class);
+    private Preferences prefs;
 
     // Preference Keys
     final String USERS_KEY = "users";
     final String BLOODSUGARS_KEY = "bloodsugars";
+    
+    public Database(){
+        prefs = Preferences.userNodeForPackage(com.lauttadev.diabetesassistant.Main.class);
+    }
+    public Database(String node){
+        prefs = Preferences.userRoot().node(node);
+    }
     
     /**
      * Get all users from a JSON'd preference
@@ -167,5 +175,9 @@ public class Database {
         
         // Overwrite all the values
         prefs.put(BLOODSUGARS_KEY, bloodSugarsJson.toJSONString());
+    }
+    
+    public void deleteNode() throws BackingStoreException{
+        prefs.removeNode();
     }
 }

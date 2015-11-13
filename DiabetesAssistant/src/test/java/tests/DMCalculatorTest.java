@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package DMCalculatorTest;
+package tests;
 
 import com.lauttadev.diabetesassistant.DMCalculator;
 import java.util.ArrayList;
@@ -14,10 +9,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Kristian
- */
 public class DMCalculatorTest {
     private DMCalculator calc = new DMCalculator();
     
