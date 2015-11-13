@@ -6,15 +6,17 @@
 
 package com.lauttadev.diabetesassistant;
 
+import com.lauttadev.diabetesassistant.gui.UsersStage;
 import java.util.Scanner;
-import org.json.simple.parser.ParseException;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class Main {
+public class Main extends Application {
     public static void main(String[] args) {
-        System.out.println("Hey, welcome to your personal Diabetes Assistant");
         Scanner reader = new Scanner(System.in);
         Assistant assistant = new Assistant();
         LoginManager login = new LoginManager();
+        launch(args);
         
         while(true){
             try {
@@ -36,5 +38,10 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception{
+        //new UsersStage();
     }
 }
