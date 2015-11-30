@@ -11,6 +11,7 @@ import java.io.IOException;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -34,6 +35,8 @@ public class Main extends Application {
         root.getChildren().addAll(manager);
         
         primaryStage.setTitle("Diabetes Assistant");
+        primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image("/img/icon.png"));
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
     }
