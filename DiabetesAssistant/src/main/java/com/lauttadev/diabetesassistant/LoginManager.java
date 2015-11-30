@@ -9,22 +9,19 @@ package com.lauttadev.diabetesassistant;
 import com.lauttadev.diabetesassistant.models.User;
 
 public class LoginManager {
-    private User user = null;
-    public boolean loggedIn = false;
+    public static User user = null;
     
-    public void login(User user){
+    public static void login(User user){
         if(user != null){
-            this.user = user;
-            this.loggedIn = true;
+            LoginManager.user = user;
         }
     }
     
-    public void logout(){
-        user = null;
-        loggedIn = false;
+    public static void logout(){
+        LoginManager.user = null;
     }
     
-    public User getUser(){
-        return user;
+    public static User getUser(){
+        return LoginManager.user;
     }
 }

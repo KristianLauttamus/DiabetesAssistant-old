@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+      xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.lauttadev.diabetesassistant.gui.BloodSugarsChartController">
+   <children>
+      <HBox prefHeight="27.0" prefWidth="600.0">
+         <children>
+            <Button fx:id="back_button" mnemonicParsing="false" onAction="#handleBackButton" styleClass="back" stylesheets="@../styles/app.css" text="">
+               <font>
+                  <Font name="FontAwesome" size="15.0" />
+               </font>
+            </Button>
+            <Label fx:id="user_name" minWidth="-Infinity" prefHeight="25.0" prefWidth="413.0" text="Label">
+               <font>
+                  <Font name="KaushanScript-Regular" size="15.0" />
+               </font>
+               <effect>
+                  <Lighting>
+                     <bumpInput>
+                        <Shadow />
+                     </bumpInput>
+                  </Lighting>
+               </effect>
+            </Label>
+            <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="17.0" prefWidth="100.0" text="Verensokerit" textAlignment="RIGHT">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <MenuButton alignment="TOP_RIGHT" mnemonicParsing="false" styleClass="back" stylesheets="@../styles/app.css" text="" textAlignment="CENTER">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#handleDeleteUserInfoButton" text="Pyyhi tiedot" />
+                <MenuItem mnemonicParsing="false" onAction="#handleDeleteUserButton" text="Poista tunnus" />
+              </items>
+               <font>
+                  <Font name="FontAwesome" size="15.0" />
+               </font>
+            </MenuButton>
+         </children>
+      </HBox>
+      <LineChart alternativeRowFillVisible="false">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+   </children>
+</VBox>

@@ -6,9 +6,10 @@
 
 package com.lauttadev.diabetesassistant;
 
+import com.lauttadev.diabetesassistant.gui.ScreenManager;
+import java.io.IOException;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -18,8 +19,20 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/Users.fxml"));
+    public void start(Stage primaryStage) throws IOException{
+        LoginManager loginManager = new LoginManager();
+        
+        ScreenManager manager = new ScreenManager(loginManager);
+        
+        // Load screens
+        manager.load();
+        
+        // Set the starting screen
+        manager.setScreen(ScreenManager.USERS_SCREEN_ID);
+        
+        Group root = new Group();
+        root.getChildren().addAll(manager);
+        
         primaryStage.setTitle("Diabetes Assistant");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();

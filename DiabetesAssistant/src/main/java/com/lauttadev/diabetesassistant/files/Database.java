@@ -1,48 +1,47 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.lauttadev.diabetesassistant.files;
 
 import com.lauttadev.diabetesassistant.models.BloodSugar;
 import com.lauttadev.diabetesassistant.models.User;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Database {
-    // Retrieve the user preference node for the package com.mycompany
-    private Preferences prefs;
-
-    // Preference Keys
-    final String USERS_KEY = "users";
-    final String BLOODSUGARS_KEY = "bloodsugars";
+    private final String users_file_location = System.getProperty("user.home") + "/dma_users_data.json";
+    private final String bloodsugars_file_location = System.getProperty("user.home") + "/dma_bloodsugars_data.json";
     
-    public Database(){
-        prefs = Preferences.userNodeForPackage(com.lauttadev.diabetesassistant.Main.class);
-    }
-    public Database(String node){
-        prefs = Preferences.userRoot().node(node);
+    /**
+     * Get the actual file that has all the users
+     * @return 
+     */
+    public JSONArray getUsersData(){
+        try (FileReader file = new FileReader(users_file_location)) {
+            JSONParser parser = new JSONParser();
+            
+            return (JSONArray)parser.parse(file);
+        } catch(Exception ex){
+            System.out.println(ex.getMessage());
+            
+            return new JSONArray();
+        }
     }
     
     /**
      * Get all users from a JSON'd preference
+     * @return 
      * @throws ParseException 
      */
     public ArrayList<User> getUsers() throws ParseException{
-        JSONArray usersJson = (JSONArray)new JSONParser().parse(prefs.get(USERS_KEY, "[]"));
-        ArrayList<User> users = new ArrayList<User>();
+        JSONArray allData = getUsersData();
+        ArrayList<User> users = new ArrayList<>();
         
-        for(int i = 0; i < usersJson.size(); i++){
-            JSONObject user = (JSONObject)usersJson.get(i);
-            
-            users.add(new User((String)user.get("name"), (String)user.get("id")));
+        for (Object data : allData) {
+            JSONObject user = (JSONObject) data;
+            users.add(new User((String)user.get("id"), (String)user.get("name")));
         }
         
         return users;
@@ -52,20 +51,23 @@ public class Database {
      * Save all users to preferences
      * @param users 
      */
-    public void saveUsers(JSONArray users){
-        prefs.put(USERS_KEY, users.toJSONString());
+    public void saveJSONUsers(JSONArray users){
+        try (FileWriter file = new FileWriter(users_file_location)) {
+            file.write(users.toJSONString());
+            file.close();
+        } catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
     }
     
     /**
      * Save users from ArrayList
-     * @param ArrayList<User> users 
+     * @param newUsers
      */
-    public void setUsers(ArrayList<User> newUsers){
+    public void saveUsers(ArrayList<User> newUsers){
         JSONArray users = new JSONArray();
         
-        for(int i = 0; i < newUsers.size(); i++){
-            User user = newUsers.get(i);
-            
+        for (User user : newUsers) {
             JSONObject userObj = new JSONObject();
             userObj.put("id", user.getId());
             userObj.put("name", user.getName());
@@ -73,45 +75,100 @@ public class Database {
             users.add(userObj);
         }
         
-        this.saveUsers(users);
+        this.saveJSONUsers(users);
     }
     
     /**
      * Save a single user
-     * @param user 
+     * @param newUser
+     * @throws org.json.simple.parser.ParseException 
      */
-    public void saveUser(User user) throws ParseException{
+    public void saveUser(User newUser) throws ParseException {
         ArrayList<User> users = this.getUsers();
         boolean found = false;
         
-        for(int i = 0; i < users.size(); i++){
-            if(users.get(i).getId() == user.getId()){
-                users.get(i).setName(user.getName());
+        for (User user : users) {
+            if (user.getId().equals(newUser.getId())) {
+                user.setName(newUser.getName());
                 found = true;
             }
         }
         
         if(!found){
-            users.add(user);
+            users.add(newUser);
         }
         
-        this.setUsers(users);
+        this.saveUsers(users);
     }
     
     /**
      * Update a single user
      * @param user 
+     * @throws org.json.simple.parser.ParseException 
      */
     public void updateUser(User user) throws ParseException{
         ArrayList<User> users = this.getUsers();
         
-        for(int i = 0; i < users.size(); i++){
-            if(users.get(i).getId() == user.getId()){
-                users.get(i).setName(user.getName());
+        for (User findUser : users) {
+            if (findUser.getId().equals(user.getId())) {
+                findUser.setName(user.getName());
             }
         }
         
-        this.setUsers(users);
+        this.saveUsers(users);
+    }
+    
+    /**
+     * Delete a single user
+     * @param user 
+     * @throws org.json.simple.parser.ParseException 
+     */
+    public void deleteUser(User user) throws ParseException{
+        ArrayList<User> oldUsers = this.getUsers();
+        ArrayList<User> users = new ArrayList<>();
+        
+        for (User oldUser : oldUsers) {
+            if (!oldUser.getId().equals(user.getId())) {
+                users.add(oldUser);
+            }
+        }
+        
+        this.saveUsers(users);
+    }
+    
+    /**
+     * Delete a single user
+     * @param user 
+     * @throws org.json.simple.parser.ParseException 
+     */
+    public void deleteUserInfo(User user) throws ParseException{
+        JSONObject bloodSugarsObject = this.getBloodSugarsData();
+        
+        if(bloodSugarsObject.containsKey(user.getId())){
+            bloodSugarsObject.remove(user.getId());
+
+            // Overwrite all the values
+            try(FileWriter file = new FileWriter(this.bloodsugars_file_location)){
+                file.write(bloodSugarsObject.toJSONString());
+                file.close();
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+    
+    /**
+     * Get the actual file that has all the bloodsugars for each user
+     * @return 
+     */
+    public JSONObject getBloodSugarsData(){
+        try (FileReader file = new FileReader(bloodsugars_file_location)) {
+            JSONParser parser = new JSONParser();
+            return (JSONObject)parser.parse(file);
+        } catch(Exception ex){
+            System.out.println(ex.getMessage());
+            return new JSONObject();
+        }
     }
     
     /**
@@ -119,34 +176,34 @@ public class Database {
      * @param user
      * @return 
      */
-    public ArrayList<BloodSugar> getBloodSugars(User user) throws ParseException {
-        JSONObject bloodSugarsJson = (JSONObject)new JSONParser().parse(prefs.get(BLOODSUGARS_KEY, "{}"));
+    public ArrayList<BloodSugar> getBloodSugars(User user) {
+        JSONObject bloodSugarsJson = getBloodSugarsData();
         
         // Check if user is found in the BloodSugars Object
-        if(bloodSugarsJson.containsKey(user.getId())){
-            ArrayList<BloodSugar> bloodSugars = new ArrayList<BloodSugar>();
-            JSONArray bloodSugarsTemp = (JSONArray)bloodSugarsJson.get(user.getId());
+        if(bloodSugarsJson == null || bloodSugarsJson.containsKey(user.getId())){
+            ArrayList<BloodSugar> bloodSugars = new ArrayList<>();
+            JSONArray bloodSugarsTempData = (JSONArray)bloodSugarsJson.get(user.getId());
             
-            for(int i = 0; i < bloodSugarsTemp.size(); i++){
-                JSONObject bloodSugar = (JSONObject)bloodSugarsTemp.get(i);
-                
+            for (Object bloodSugarsTemp : bloodSugarsTempData) {
+                JSONObject bloodSugar = (JSONObject) bloodSugarsTemp;
                 bloodSugars.add(new BloodSugar((String)bloodSugar.get("value"), (long)bloodSugar.get("timestamp")));
             }
             
             return bloodSugars;
         }
         
-        return new ArrayList<BloodSugar>();
+        return new ArrayList<>();
     }
     
     /**
      * Add BloodSugar for the User
-     * @param bs, 
+     * @param newBloodSugar 
      * @param user 
+     * @throws org.json.simple.parser.ParseException 
      */
-    public void addBloodsugar(String bs, User user) throws ParseException {
+    public void addBloodsugar(String newBloodSugar, User user) throws ParseException {
         ArrayList<BloodSugar> bloodSugars = this.getBloodSugars(user);
-        BloodSugar bloodSugar = new BloodSugar(bs);
+        BloodSugar bloodSugar = new BloodSugar(newBloodSugar);
         
         bloodSugars.add(bloodSugar);
         
@@ -155,29 +212,49 @@ public class Database {
     
     /**
      * Save users Bloodsugar
+     * @param bloodSugars
      * @param user
-     * @return 
+     * @throws org.json.simple.parser.ParseException 
      */
     public void saveBloodSugars(ArrayList<BloodSugar> bloodSugars, User user) throws ParseException {
-        JSONObject bloodSugarsJson = (JSONObject)new JSONParser().parse(prefs.get(BLOODSUGARS_KEY, "{}"));
+        JSONObject bloodSugarsJson = this.getBloodSugarsData();
         
         JSONArray bloodSugarsArray = new JSONArray();
-        for(int i = 0; i < bloodSugars.size(); i++){
+        for (BloodSugar bloodSugar : bloodSugars) {
             // Create JSONObject from BloodSugar
-            JSONObject bloodSugar = new JSONObject();
-            bloodSugar.put("value", bloodSugars.get(i).getValue());
-            bloodSugar.put("timestamp", bloodSugars.get(i).getTimestamp());
-            
+            JSONObject newBloodSugar = new JSONObject();
+            newBloodSugar.put("value", bloodSugar.getValue());
+            newBloodSugar.put("timestamp", bloodSugar.getTimestamp());
             // Add it to the array
-            bloodSugarsArray.add(bloodSugar);
+            bloodSugarsArray.add(newBloodSugar);
         }
         bloodSugarsJson.put(user.getId(), bloodSugarsArray);
         
         // Overwrite all the values
-        prefs.put(BLOODSUGARS_KEY, bloodSugarsJson.toJSONString());
+        try(FileWriter file = new FileWriter(this.bloodsugars_file_location)){
+            file.write(bloodSugarsJson.toJSONString());
+            file.close();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     
-    public void deleteNode() throws BackingStoreException{
-        prefs.removeNode();
+    /**
+     * Destroy everything
+     */
+    public void destroy() {
+        try(FileWriter file = new FileWriter(this.users_file_location)){
+            file.write("[]");
+            file.close();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
+        
+        try(FileWriter file = new FileWriter(this.bloodsugars_file_location)){
+            file.write("{}");
+            file.close();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

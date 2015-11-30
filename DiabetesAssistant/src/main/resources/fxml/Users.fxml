@@ -7,7 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
 
-<HBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.lauttadev.diabetesassistant.gui.UsersController">
+<HBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.lauttadev.diabetesassistant.gui.UsersController">
    <children>
       <VBox alignment="CENTER" fillWidth="false" prefHeight="400.0" prefWidth="300.0">
          <children>
@@ -22,11 +24,11 @@
                   <Insets right="5.0" />
                </padding>
             </Label>
-                <TextField fx:id="nameTextField" alignment="CENTER" prefHeight="25.0" prefWidth="194.0" promptText="Käyttäjän nimi">
+                <TextField fx:id="name" alignment="CENTER" prefHeight="25.0" prefWidth="194.0" promptText="Käyttäjän nimi">
                <VBox.margin>
                   <Insets top="5.0" />
                </VBox.margin></TextField>
-                <Button fx:id="createUserBtn" mnemonicParsing="false" onAction="#handleCreateUserClick" prefHeight="25.0" prefWidth="77.0" text="Luo">
+                <Button mnemonicParsing="false" onAction="#handleCreateUserClick" prefHeight="25.0" prefWidth="77.0" text="Luo">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin></Button>
@@ -42,14 +44,9 @@
                   <Insets right="4.0" />
                </padding>
             </Label>
-            <ListView id="users" fx:id="users" prefHeight="360.0" prefWidth="296.0">
+            <ListView fx:id="users" prefHeight="360.0" prefWidth="296.0" onMouseClicked="#handleUserSelect">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="One" />
-                        <String fx:value="Two" />
-                        <String fx:value="Three" />
-                        <String fx:value="Four" />
-                        <String fx:value="Five" />
                     </FXCollections>
                 </items>
                <VBox.margin>

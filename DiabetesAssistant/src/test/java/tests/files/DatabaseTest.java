@@ -14,12 +14,12 @@ public class DatabaseTest {
     
     @Before
     public void setUp() {
-        this.db = new Database("test");
+        this.db = new Database();
     }
     
     @After
     public void tearDown() throws BackingStoreException {
-        this.db.deleteNode();
+        this.db.destroy();
     }
     
     @Test
